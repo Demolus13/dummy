@@ -7,11 +7,15 @@ permissions:
 
 jobs:
   build:
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        java_version: ['8', '11', '17']
+        java_version: ['17']
         os: [ubuntu-latest]
     steps:
 
@@ -29,4 +33,12 @@ jobs:
         cache: maven
 
     - name: Build
-      run: ./mvnw clean package
+      run: |
+        ./mvnw clean package
+        echo ${{ matrix.java_version }}
+
+    # Build provenance
+    - name: Attest Build Provenance
+      uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940 # v1.0.0
+      with:
+        subject-path: target/*.jar
