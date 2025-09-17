@@ -1,0 +1,16 @@
+name: Dummy Workflow
+
+on:
+  workflow_call:
+    inputs:
+      dummy-input:
+        required: false
+        type: string
+        default: "Hello from Dummy!"
+
+jobs:
+  dummy_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print input
+        run: echo "${{ inputs.dummy-input }}"

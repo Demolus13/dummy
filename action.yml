@@ -1,0 +1,13 @@
+name: Dummy Workflow
+
+description: A dummy workflow that prints a message.
+
+inputs:
+  dummy-input:
+    description: 'Print a message.'
+    required: false
+    default: 'Hello from Action Dummy!'
+
+runs:
+  using: "workflow"
+  file: ".github/workflows/action-a.yml"
