@@ -27,16 +27,27 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Cache Macaron setup
+      id: cache-macaron
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/macaron
+        key: macaron-setup-0.16.0
+        restore-keys: macaron-setup-
+      shell: bash
+
     - name: Setup Macaron
+      if: steps.cache-macaron.outputs.cache-hit != 'true'
       run: |
-        curl -O https://raw.githubusercontent.com/oracle/macaron/release/scripts/release_scripts/run_macaron.sh
-        chmod +x run_macaron.sh
+        mkdir -p ${{ runner.temp }}/macaron
+        curl -o ${{ runner.temp }}/macaron/run_macaron.sh https://raw.githubusercontent.com/oracle/macaron/release/scripts/release_scripts/run_macaron.sh
+        chmod +x ${{ runner.temp }}/macaron/run_macaron.sh
       shell: bash
 
     - name: Run Macaron Analysis
       id: run-macaron-analysis
       run: |
-        CMD="./run_macaron.sh --output-dir ${{ inputs.output_dir }} -lr . analyze -rp ."
+        CMD="${{ runner.temp }}/macaron/run_macaron.sh --output-dir ${{ inputs.output_dir }} -lr . analyze -rp ."
 
         if [ -n "${{ inputs.deps_depth }}" ]; then
           CMD="$CMD --deps-depth ${{ inputs.deps_depth }}"
@@ -63,7 +74,7 @@ runs:
           exit 1
         fi
 
-        CMD="./run_macaron.sh verify-policy --database ${{ inputs.output_dir }}/macaron.db"
+        CMD="${{ runner.temp }}/macaron/run_macaron.sh --database ${{ inputs.output_dir }}/macaron.db"
 
         if [ -n "${{ inputs.policy_file }}" ]; then
           CMD="$CMD --file ${{ inputs.policy_file }}"
