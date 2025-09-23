@@ -3,6 +3,8 @@ description: "Run Macaron to analyze supply chain security"
 author: "Oracle - github.com/oracle/macaron"
 
 inputs:
+  policy_name:
+    description: "Using pre-define policies"
   policy_file:
     description: "Path to custom policy_file"
   deps_depth:
@@ -35,6 +37,7 @@ runs:
       id: run-macaron-analysis
       run: |
         CMD="./run_macaron.sh --output-dir ${{ inputs.output_dir }} -lr . analyze -rp ."
+
         if [ -n "${{ inputs.deps_depth }}" ]; then
           CMD="$CMD --deps-depth ${{ inputs.deps_depth }}"
         fi
@@ -53,16 +56,26 @@ runs:
 
     - name: Run Macaron Policy Verification
       id: run-macaron-policy-verification
+      if: ${{ inputs.policy_file }} || ${{ inputs.policy_name }}
       run: |
+        if [[ -n "${{ inputs.policy_file }}" && -n "${{ inputs.policy_name }}" ]]; then
+          echo "::error::Only one of 'policy_file' or 'policy_name' can be specified, but both were defined."
+          exit 1
+        fi
+
         CMD="./run_macaron.sh verify-policy --database ${{ inputs.output_dir }}/macaron.db"
-        if ${{ inputs.policy_file }}; then
+
+        if [ -n "${{ inputs.policy_file }}" ]; then
           CMD="$CMD --file ${{ inputs.policy_file }}"
         fi
-        if $CMD; then
+
+        eval "$CMD"
+
+        if [ $? -eq 0 ]; then
           echo "status=pass" >> $GITHUB_OUTPUT
           echo "vsa=vsa_path" >> $GITHUB_OUTPUT
-        fi
-        if pass; then
-          echo "vsa=vsa_path" >> $GITHUB_OUTPUT
+        else
+          echo "status=fail" >> "$GITHUB_OUTPUT"
+          exit 1
         fi
       shell: bash
