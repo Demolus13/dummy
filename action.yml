@@ -1,5 +1,6 @@
 name: "Macaron Security Analysis"
 description: "Run Macaron to analyze supply chain security"
+author: "Oracle - github.com/oracle/macaron"
 
 inputs:
   policy_file:
