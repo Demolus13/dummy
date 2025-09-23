@@ -1,0 +1,16 @@
+name: Macaron Test CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macaron-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Macaron Action
+        uses: ./.github/actions/action.yml

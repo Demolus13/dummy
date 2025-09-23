@@ -1,0 +1,61 @@
+name: "Macaron Security Analysis"
+description: "Run Macaron to analyze supply chain security"
+
+inputs:
+  policy_file:
+    description: "Path to custom policy_file"
+  deps_depth:
+    description: "Depth for dependency analysis"
+  output_dir:
+    description: "Directory to store analysis reports"
+    default: "output"
+
+outputs:
+  status:
+    description: "Pass/Fail status of the analysis"
+    value: ${{ steps.run-macaron-policy-verification.outputs.status }}
+  report:
+    description: "Path to the Macaron analysis report"
+    value: ${{ steps.run-macaron-analysis.outputs.report }}
+  vsa:
+    description: "Verification Summary Attestation"
+    value: ${{ steps.run-macaron-policy-verification.outputs.vsa }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Macaron
+      run: |
+        curl -O https://raw.githubusercontent.com/oracle/macaron/release/scripts/release_scripts/run_macaron.sh
+        chmod +x run_macaron.sh
+      shell: bash
+
+    - name: Run Macaron Analysis
+      id: run-macaron-analysis
+      run: |
+        CMD="./run_macaron.sh --output-dir ${{ inputs.output_dir }} -lr . analyze -rp ."
+        if ${{ inputs.deps_depth }}; then
+          CMD="$CMD --deps-depth ${{ inputs.deps_depth }}"
+        fi
+        if $CMD; then
+          echo "report=report_path" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Run Macaron Policy Verification
+      id: run-macaron-policy-verification
+      run: |
+        CMD="./run_macaron.sh verify-policy --database ${{ inputs.output_dir }}/macaron.db"
+        if ${{ inputs.policy_file }}; then
+          CMD="$CMD --file ${{ inputs.policy_file }}"
+        fi
+        if $CMD; then
+          echo "status=pass" >> $GITHUB_OUTPUT
+          echo "vsa=vsa_path" >> $GITHUB_OUTPUT
+        fi
+        if pass; then
+          echo "vsa=vsa_path" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
