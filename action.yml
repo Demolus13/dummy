@@ -35,11 +35,17 @@ runs:
       id: run-macaron-analysis
       run: |
         CMD="./run_macaron.sh --output-dir ${{ inputs.output_dir }} -lr . analyze -rp ."
-        if ${{ inputs.deps_depth }}; then
+        if [ -n "${{ inputs.deps_depth }}" ]; then
           CMD="$CMD --deps-depth ${{ inputs.deps_depth }}"
         fi
-        if $CMD; then
+
+        eval "$CMD"
+
+        if [ $? -eq 0 ]; then
           echo "report=report_path" >> $GITHUB_OUTPUT
+        else
+          echo "Macaron analysis failed."
+          exit 1
         fi
       shell: bash
       env:
