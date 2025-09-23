@@ -34,7 +34,6 @@ runs:
         path: ${{ runner.temp }}/macaron
         key: macaron-setup-0.16.0
         restore-keys: macaron-setup-
-      shell: bash
 
     - name: Setup Macaron
       if: steps.cache-macaron.outputs.cache-hit != 'true'
