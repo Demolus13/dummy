@@ -39,12 +39,12 @@ inputs:
     default: "output"
 
 outputs:
-  report:
+  policy_report:
     description: "Path to the Macaron analysis report"
-    value: ${{ steps.run-macaron-analysis.outputs.report }}
-  vsa:
+    value: ${{ steps.run-macaron-analysis.outputs.policy_report }}
+  vsa_report:
     description: "Verification Summary Attestation"
-    value: ${{ steps.run-macaron-policy-verification.outputs.vsa }}
+    value: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
 
 runs:
   using: "composite"
@@ -88,6 +88,14 @@ runs:
           CMD="$CMD --sbom-path ${{ inputs.sbom_path }}"
         fi
 
+        if [ -n "${{ inputs.provenanace_file }}" ]; then
+          CMD="$CMD --provenanace-file ${{ inputs.provenanace_file }}"
+        fi
+
+        if [ -n "${{ inputs.provenanace_expectation }}" ]; then
+          CMD="$CMD --provenanace-expectation ${{ inputs.provenanace_expectation }}"
+        fi
+
         eval "$CMD"
 
         if [ $? -eq 0 ]; then
@@ -111,7 +119,10 @@ runs:
         eval "$CMD"
 
         if [ $? -eq 0 ]; then
-          echo "vsa=vsa_path" >> $GITHUB_OUTPUT
+          echo "policy_report=${{ inputs.output_dir }}/policy_report.json" >> $GITHUB_OUTPUT
+          if [ -f "${{ inputs.output_dir }}/vsa.intoto.jsonl" ]; then
+            echo "vsa_report=${{ inputs.output_dir }}/vsa.intoto.jsonl" >> $GITHUB_OUTPUT
+          fi
         else
           exit 1
         fi
