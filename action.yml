@@ -62,7 +62,7 @@ runs:
       run: |
         if [ -n "${{ inputs.defaults_path }}" ]; then
           CMD="$MACARON --defaults-path ${{ inputs.defaults_path }}"
-        else:
+        else
           CMD="$MACARON"
         fi
 
