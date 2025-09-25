@@ -112,10 +112,15 @@ runs:
       id: run-macaron-policy-verification
       if: ${{ inputs.policy_file }}
       run: |
+        FILE="${{ inputs.policy_file }}"
         KEYWORDS=("SALSA-1" "SALSA-2" "SALSA-3")
 
-        FILE="${{ inputs.policy_file }}"
-        CMD="$MACARON verify-policy --database ${{ inputs.output_dir }}/macaron.db"
+        if [ -n "${{ inputs.defaults_path }}" ]; then
+          CMD="$MACARON --defaults-path ${{ inputs.defaults_path }}"
+        else
+          CMD="$MACARON"
+        fi
+        CMD="$CMD --output-dir ${{ inputs.output_dir }} verify-policy --database ${{ inputs.output_dir }}/macaron.db"
 
         if [ -f "$FILE" ]; then
           CMD="$CMD --file $FILE"
