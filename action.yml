@@ -21,8 +21,6 @@ inputs:
     description: "The path to the provenance file in in-toto format."
   verify_provenance:
     description: "Allow the analysis to attempt to verify provenance files as part of its normal operations."
-  template_path:
-    description: "The path to the Jinja2 html template (please make sure to use .html or .j2 extensions)."
   show_prelude:
     description: "Show policy prelude."
   branch:
@@ -39,12 +37,12 @@ inputs:
     default: "output"
 
 outputs:
-  policy_reports:
+  policy_report:
     description: "Paths to the Macaron analysis report"
-    value: ${{ steps.run-macaron-analysis.outputs.policy_reports }}
-  vsa_reports:
+    value: ${{ steps.run-macaron-policy-verification.outputs.policy_report }}
+  vsa_report:
     description: "Verification Summary Attestations"
-    value: ${{ steps.run-macaron-policy-verification.outputs.vsa_reports }}
+    value: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
 
 runs:
   using: "composite"
