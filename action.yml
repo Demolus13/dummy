@@ -39,12 +39,12 @@ inputs:
     default: "output"
 
 outputs:
-  policy_report:
-    description: "Path to the Macaron analysis report"
-    value: ${{ steps.run-macaron-analysis.outputs.policy_report }}
-  vsa_report:
-    description: "Verification Summary Attestation"
-    value: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
+  policy_reports:
+    description: "Paths to the Macaron analysis report"
+    value: ${{ steps.run-macaron-analysis.outputs.policy_reports }}
+  vsa_reports:
+    description: "Verification Summary Attestations"
+    value: ${{ steps.run-macaron-policy-verification.outputs.vsa_reports }}
 
 runs:
   using: "composite"
@@ -112,18 +112,43 @@ runs:
       id: run-macaron-policy-verification
       if: ${{ inputs.policy_file }}
       run: |
-        if [ -f "${{ inputs.policy_file }}" ]; then
-          CMD="$MACARON verify-policy --database ${{ inputs.output_dir }}/macaron.db --file ${{ inputs.policy_file }}"
-        fi
+        KEYWORDS=("SALSA-1" "SALSA-2" "SALSA-3")
 
-        eval "$CMD"
+        FILE="${{ inputs.policy_file }}"
+        CMD="$MACARON verify-policy --database ${{ inputs.output_dir }}/macaron.db"
 
-        if [ $? -eq 0 ]; then
-          echo "policy_report=${{ inputs.output_dir }}/policy_report.json" >> $GITHUB_OUTPUT
-          if [ -f "${{ inputs.output_dir }}/vsa.intoto.jsonl" ]; then
-            echo "vsa_report=${{ inputs.output_dir }}/vsa.intoto.jsonl" >> $GITHUB_OUTPUT
+        if [ -f "$FILE" ]; then
+          CMD="$CMD --file $FILE"
+
+          eval "$CMD"
+
+          if [ $? -eq 0 ]; then
+            echo "policy_report=${{ inputs.output_dir }}/policy_report.json" >> $GITHUB_OUTPUT
+            if [ -f "${{ inputs.output_dir }}/vsa.intoto.jsonl" ]; then
+              echo "vsa_report=${{ inputs.output_dir }}/vsa.intoto.jsonl" >> $GITHUB_OUTPUT
+            else
+              echo "vsa_report=VSA Not Generated." >> $GITHUB_OUTPUT
+            fi
           fi
         else
-          exit 1
+          for KEYWORD in "${KEYWORDS[@]}"; do
+            if [ "$FILE" == "$KEYWORD" ]; then
+              echo "Matched keyword: $KEYWORD"
+              # CMD="$CMD --file ${{ github.action_path }}/${FILE}.dl"
+              echo "$CMD --file ${{ github.action_path }}/${FILE}.dl"
+
+              # eval "$CMD"
+
+              # if [ $? -eq 0 ]; then
+              #   echo "policy_report=${{ inputs.output_dir }}/policy_report.json" >> $GITHUB_OUTPUT
+              #   if [ -f "${{ inputs.output_dir }}/vsa.intoto.jsonl" ]; then
+              #     echo "vsa_report=${{ inputs.output_dir }}/vsa.intoto.jsonl" >> $GITHUB_OUTPUT
+              #   else
+              #     echo "vsa_report=VSA Not Generated." >> $GITHUB_OUTPUT
+              #   fi
+              # fi
+              break
+            fi
+          done
         fi
       shell: bash
