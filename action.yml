@@ -164,4 +164,5 @@ runs:
       uses: actions/attest@v2
       with:
         subject-path: '${{ github.workspace }}'
+        predicate-type: 'https://slsa.dev/verification_summary/v1'
         predicate-path: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
