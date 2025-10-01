@@ -163,4 +163,5 @@ runs:
       if: ${{ inputs.upload_attestation && steps.run-macaron-policy-verification.outputs.vsa_report != 'VSA Not Generated.' }}
       uses: actions/attest@v2
       with:
+        subject-path: '${{ github.repositoryUrl }}'
         predicate-path: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
