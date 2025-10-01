@@ -16,3 +16,4 @@ jobs:
         uses: ./
         with:
           policy_file: has-hosted-build.dl
+          upload_attestation: true
