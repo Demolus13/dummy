@@ -160,7 +160,7 @@ runs:
       shell: bash
 
     - name: Upload Attestation 
-      if: ${{ inputs.upload_attestation && steps.run-macaron-policy-verification.outputs.vsa_report != "VSA Not Generated." }}
+      if: ${{ inputs.upload_attestation && steps.run-macaron-policy-verification.outputs.vsa_report != 'VSA Not Generated.' }}
       uses: actions/attest@v2
       with:
         predicate-file: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
