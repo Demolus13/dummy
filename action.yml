@@ -35,6 +35,9 @@ inputs:
   output_dir:
     description: "The output destination path for Macaron."
     default: "output"
+  upload_attestation:
+    description: "Upload the generated VSA report. default : false"
+    default: "false"
 
 outputs:
   policy_report:
@@ -155,3 +158,9 @@ runs:
           done
         fi
       shell: bash
+
+    - name: Upload Attestation 
+      if: ${{ inputs.upload_attestation && steps.run-macaron-policy-verification.outputs.vsa_report != "VSA Not Generated." }}
+      uses: actions/attest@v2
+      with:
+        predicate-file: ${{ steps.run-macaron-policy-verification.outputs.vsa_report }}
