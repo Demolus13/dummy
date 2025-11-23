@@ -19,5 +19,5 @@ jobs:
       - name: Run Macaron Analysis
         uses: ./
         with:
-          policy_file: has-hosted-build.dl
+          policy_file: check-github-actions
           upload_attestation: true
