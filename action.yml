@@ -162,8 +162,8 @@ runs:
             fi
           fi
         elif [ -n "${{ inputs.policy_purl }}" ]; then
-          CMD="$CMD --existing-policy ${FILE}"
-          echo "$CMD --existing-policy ${FILE}"
+          CMD="$CMD --existing-policy ${FILE} --package-url ${{ inputs.policy_purl }}"
+          echo "$CMD"
 
           eval "$CMD"
 
