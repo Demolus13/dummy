@@ -79,6 +79,7 @@ runs:
         source .venv/bin/activate
         make setup
         echo "MACARON=macaron" >> $GITHUB_ENV
+        echo "${{ runner.temp }}/macaron/.venv/bin" >> $GITHUB_PATH
       shell: bash
 
     - name: Run Macaron Analysis
