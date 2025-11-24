@@ -20,4 +20,5 @@ jobs:
         uses: ./
         with:
           policy_file: check-github-actions
+          policy_purl: 'pkg:github.com/behnazh-w/example-maven-app@*'
           upload_attestation: true

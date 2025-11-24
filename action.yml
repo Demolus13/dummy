@@ -11,6 +11,8 @@ inputs:
     description: "The path to the repository, can be local or remote."
   policy_file:
     description: "Path to the Datalog policy."
+  policy_purl:
+    description: The PURL string for the pre-defined policy.
   defaults_path:
     description: "The path to the defaults configuration file."
   digest:
@@ -159,7 +161,7 @@ runs:
               echo "vsa_report=VSA Not Generated." >> $GITHUB_OUTPUT
             fi
           fi
-        else
+        elif [ -n "${{ inputs.policy_purl }}" ]; then
           CMD="$CMD --existing-policy ${FILE}"
           echo "$CMD --existing-policy ${FILE}"
 
@@ -173,6 +175,8 @@ runs:
               echo "vsa_report=VSA Not Generated." >> $GITHUB_OUTPUT
             fi
           fi
+        else
+          echo "No file or pre-defined policy found for ${FILE} and policy_purl ${{ inputs.policy_purl }}"
         fi
       shell: bash
 
