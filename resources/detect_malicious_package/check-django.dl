@@ -1,0 +1,8 @@
+#include "prelude.dl"
+
+Policy("check-django", component_id, "Check django artifacts.") :-
+    check_passed(component_id, "mcn_detect_malicious_metadata_1").
+
+apply_policy_to("check-django", component_id) :-
+    is_component(component_id, purl),
+    match("pkg:pypi/django@.*", purl).

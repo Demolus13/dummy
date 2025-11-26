@@ -1,0 +1,10 @@
+#include "prelude.dl"
+
+Policy("has-verified-provenance-toga", component_id, "Require a verified provenance file for toga.") :-
+    check_passed(component_id, "mcn_provenance_derived_repo_1"),
+    check_passed(component_id, "mcn_provenance_derived_commit_1"),
+    check_passed(component_id, "mcn_provenance_verified_1").
+
+apply_policy_to("has-verified-provenance-toga", component_id) :-
+    is_component(component_id, purl),
+    match("pkg:pypi/toga@.*", purl).
