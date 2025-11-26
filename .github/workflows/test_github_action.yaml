@@ -64,7 +64,12 @@ jobs:
           pip install django==5.0.6
         shell: bash
 
-      - name: Run Macaron (analyze django@5.0.6 with direct dependencies using python venv)
+      - name: Clean previous macaron output
+        run: |
+          rm -rf macaron_output/detect_malicious_package
+        shell: bash
+
+      - name: Run Macaron (analyze django@5.0.6 with direct dependencies)
         uses: ./
         with:
           package_url: 'pkg:pypi/django@5.0.6'
