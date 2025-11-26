@@ -135,6 +135,7 @@ runs:
         CMD="$CMD --provenanace-expectation ${{ inputs.provenanace_expectation }}"
       fi
 
+      echo "Executing: $CMD"
       eval "$CMD"
 
       if [ $? -eq 0 ]; then
