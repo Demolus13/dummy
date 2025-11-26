@@ -77,18 +77,28 @@ runs:
 
   - name: Setup Macaron
     run: |
-      mkdir -p ${{ runner.temp }}/macaron
-      # curl -o ${{ runner.temp }}/macaron/run_macaron.sh https://raw.githubusercontent.com/oracle/macaron/release/scripts/release_scripts/run_macaron.sh
-      # chmod +x ${{ runner.temp }}/macaron/run_macaron.sh
-      # echo "MACARON=${{ runner.temp }}/macaron/run_macaron.sh" >> $GITHUB_ENV
+      MACARON_DIR="${{ runner.temp }}/macaron"
+      VENV_MACARON="$MACARON_DIR/.venv/bin/macaron"
 
-      cd ${{ runner.temp }}/macaron
+      mkdir -p "$MACARON_DIR"
+      # curl -o $MACARON_DIR/run_macaron.sh https://raw.githubusercontent.com/oracle/macaron/release/scripts/release_scripts/run_macaron.sh
+      # chmod +x $MACARON_DIR/run_macaron.sh
+      # echo "MACARON=$MACARON_DIR/run_macaron.sh" >> $GITHUB_ENV
+
+      if [ -x "$VENV_MACARON" ]; then
+        echo "Using macaron from existing venv: $VENV_MACARON"
+        echo "MACARON=$VENV_MACARON" >> $GITHUB_ENV
+        echo "$MACARON_DIR/.venv/bin" >> $GITHUB_PATH
+        exit 0
+      fi
+
+      cd "$MACARON_DIR"
       git clone https://github.com/oracle/macaron.git .
       make venv
       source .venv/bin/activate
       make setup
-      echo "MACARON=macaron" >> $GITHUB_ENV
-      echo "${{ runner.temp }}/macaron/.venv/bin" >> $GITHUB_PATH
+      echo "MACARON=$VENV_MACARON" >> $GITHUB_ENV
+      echo "$MACARON_DIR/.venv/bin" >> $GITHUB_PATH
     shell: bash
 
   - name: Run Macaron Analysis
