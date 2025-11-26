@@ -109,7 +109,7 @@ runs:
         CMD="$CMD -purl ${{ inputs.package_url }}"
       fi
 
-      if [ -n "${{ inputs.branch }}"]; then
+      if [ -n "${{ inputs.branch }}" ]; then
         CMD="$CMD --branch ${{ inputs.branch }}"
       fi
 
