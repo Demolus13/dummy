@@ -28,7 +28,7 @@ jobs:
           package_url: 'pkg:pypi/arrow@0.15.0'
           output_dir: 'macaron_output/commit_finder'
 
-      - name: Run Macaron (verify policy: has-hosted-build)
+      - name: Run Macaron (verify policy - has-hosted-build)
         uses: ./
         with:
           policy_file: './resources/commit_finder/has-hosted-build.dl'
@@ -45,7 +45,7 @@ jobs:
           package_url: 'pkg:pypi/django@5.0.6'
           output_dir: 'macaron_output/detect_malicious_package'
 
-      - name: Run Macaron (verify policy: check-django)
+      - name: Run Macaron (verify policy - check-django)
         uses: ./
         with:
           policy_file: './resources/detect_malicious_package/check-django.dl'
@@ -72,7 +72,7 @@ jobs:
           deps_depth: '1'
           python_venv: '/tmp/.django_venv'
 
-      - name: Run Macaron (verify policy: check-dependencies)
+      - name: Run Macaron (verify policy - check-dependencies)
         uses: ./
         with:
           policy_file: './resources/detect_malicious_package/check-dependencies.dl'
@@ -84,25 +84,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Macaron (analyze repo: apache/logging-log4j2)
+      - name: Run Macaron (analyze repo - apache/logging-log4j2)
         uses: ./
         with:
           repo_path: 'https://github.com/apache/logging-log4j2'
           output_dir: 'macaron_output/detect_vulnerable_github_actions'
 
-      - name: Run Macaron (verify policy: github_actions_vulns for repo)
+      - name: Run Macaron (verify policy - github_actions_vulns for repo)
         uses: ./
         with:
           policy_file: './resources/detect_vulnerable_github_actions/check_github_actions_vuln_repo.dl'
           output_dir: 'macaron_output/detect_vulnerable_github_actions'
 
-      - name: Run Macaron (analyze purl: log4j-core example)
+      - name: Run Macaron (analyze purl - log4j-core example)
         uses: ./
         with:
           package_url: 'pkg:maven/org.apache.logging.log4j/log4j-core@3.0.0-beta3'
           output_dir: 'macaron_output/detect_vulnerable_github_actions'
 
-      - name: Run Macaron (verify policy: github_actions_vulns for purl)
+      - name: Run Macaron (verify policy - github_actions_vulns for purl)
         uses: ./
         with:
           policy_file: './resources/detect_vulnerable_github_actions/check_github_actions_vuln_purl.dl'
@@ -119,7 +119,7 @@ jobs:
           package_url: 'pkg:npm/semver@7.7.2'
           output_dir: 'macaron_output/provenance'
 
-      - name: Run Macaron (verify provenance: semver)
+      - name: Run Macaron (verify provenance - semver)
         uses: ./
         with:
           policy_file: './resources/provenance/has-verified-provenance_semver.dl'
@@ -131,7 +131,7 @@ jobs:
           package_url: 'pkg:pypi/toga@0.5.1'
           output_dir: 'macaron_output/provenance'
 
-      - name: Run Macaron (verify provenance: toga PyPI)
+      - name: Run Macaron (verify provenance - toga PyPI)
         uses: ./
         with:
           policy_file: './resources/provenance/has-verified-provenance_toga.dl'
@@ -143,7 +143,7 @@ jobs:
           package_url: 'pkg:pypi/toga@0.4.8'
           output_dir: 'macaron_output/provenance'
 
-      - name: Run Macaron (verify provenance: toga GitHub)
+      - name: Run Macaron (verify provenance - toga GitHub)
         uses: ./
         with:
           policy_file: './resources/provenance/has-verified-provenance_toga.dl'
@@ -155,7 +155,7 @@ jobs:
           package_url: 'pkg:pypi/urllib3@2.0.0a1'
           output_dir: 'macaron_output/provenance'
 
-      - name: Run Macaron (verify provenance: urllib3)
+      - name: Run Macaron (verify provenance - urllib3)
         uses: ./
         with:
           policy_file: './resources/provenance/has-verified-provenance_urllib3.dl'
@@ -175,7 +175,7 @@ jobs:
           sbom_path: './resources/detect_malicious_java_dep/example-sbom.json'
           deps_depth: '1'
 
-      - name: Run Macaron (verify policy: detect-malicious-upload)
+      - name: Run Macaron (verify policy - detect-malicious-upload)
         uses: ./
         with:
           policy_file: './resources/detect_malicious_java_dep/example-maven-app.dl'
