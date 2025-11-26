@@ -44,7 +44,7 @@ inputs:
     default: output
   upload_attestation:
     description: 'Upload the generated VSA report. default : false'
-    default: 'false'
+    default: false
   subject_path:
     description: Path to the artifact serving as the subject of the attestation.
     default: ${{ github.workspace }}
