@@ -150,7 +150,7 @@ runs:
 
   - name: Run Macaron Policy Verification
     id: run-macaron-policy-verification
-    if: ${{ inputs.policy_file }}
+    if: ${{ inputs.policy_file != '' }}
     run: |
       FILE="${{ inputs.policy_file }}"
 
@@ -194,7 +194,7 @@ runs:
     shell: bash
 
   - name: Upload Attestation
-    if: ${{ inputs.upload_attestation && steps.run-macaron-policy-verification.outputs.vsa_report != 'VSA Not Generated.' }}
+    if: ${{ inputs.upload_attestation == 'true' && steps.run-macaron-policy-verification.outputs.vsa_report != 'VSA Not Generated.' }}
     uses: actions/attest@v2
     with:
       subject-path: ${{ inputs.subject_path }}
