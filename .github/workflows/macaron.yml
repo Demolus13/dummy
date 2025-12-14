@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run Macaron action
-        uses: ./
+        uses: behnazh/test-macaron-action@286aeb1dce80918a00c8a6074cbbb9449e03b6b6
         with:
           repo_path: ./
           policy_file: check-github-actions
